@@ -1,0 +1,289 @@
+## 概念
+
+- 纯函数
+  纯函数是函数的返回值仅仅由其输入决定，没有可见的副作用。
+
+- @闭包
+  闭包是一种语言特性，它具体表现为函数内部能够访问该函数被定义时所在的环境中的变量。
+
+- 作用域
+  作用域是名字和实体的绑定有效的那部分程序。
+
+- Web语义化
+  Web语义化是指使用恰当语义的HTML标签、class类名等内容，让页面具有良好的语意结构，从而让人类和程序都能快速理解网页内容。
+
+- 柯里化
+  柯里化是一种将对具有多个形参的函数的求值转换为对一组只有一个形参的函数的求值的技术。
+
+- 偏应用
+
+- 防抖、节流
+  ```
+  防抖：任务频繁触发的情况下，只有任务触发的间隔超过指定时间间隔时任务才会执行
+  function debounce (fn, interval = 300) {
+    let timer = null;
+    return function () {
+      clearTimeout(timer);
+      setTimeout(() => {
+        fn.apply(this, arguments);
+      }, interval);
+    }
+  }
+  ```
+  节流：指定时间间隔内只会执行一次任务
+  ```
+  function throttle (fn, interval = 100) {
+    let canRun = ture;
+    return function () {
+      if (! canRun) return;
+      canRun = false;
+      setTimeout(() => {
+        fn.apply(this, arguments);
+        canRun = true;
+      }, interval);
+    }
+  }
+  ```
+- 同步、异步、阻塞、非阻塞
+  同步和异步关注的是消息通信机制，是针对IO而言
+  阻塞与非阻塞关注的是程序在等待调用结果时的状态，是针对线程而言
+  不能说“异步一定是非阻塞”，阻塞与非阻塞只是策略，异步用阻塞策略当然也可以，但是这样就发挥不出异步的优势了，没有意义，所以异步常常搭配非阻塞策略来使用。
+  https://www.zhihu.com/question/19732473/answer/20851256
+  https://www.zhihu.com/question/19732473/answer/23434554
+
+- 词法作用域
+
+## 其他常见问题
+
+- @前端性能优化（静态资源CDN 缓存 SSR）
+  1. 合并请求（减少请求数；合并JS；合并CSS；合并小图片）
+  2. 域名拆分
+  3. 开启 Gzip
+  4. 开启 KeepAlive
+  5. Minify
+  https://www.zhihu.com/question/40505685/answer/86898655
+  https://www.zhihu.com/question/20474326/answer/15696641
+
+- 介绍AST
+  用来描述一段程序的抽象语法结构，每一个节点都表示源程序中的一个构件。通过语法分析得到。语法分析是根据某种给定的形式文法对由单词序列构成得输入文本进行分析并确定其语法结构的一种过程。
+  lispy 基本不用进行语法分析，因为输入的程序本身就基本是一颗语法树。
+
+- 介绍前后端分离
+  （我理解的）前后端分离是指服务端的同学只负责服务端的业务逻辑，前端同学负责页面渲染。
+  （两种前后端分离方式的图）
+
+- 介绍 webp
+  webp是一种由谷歌发明的图像格式，与标准jpeg的图像质量相当的情况下体积更小。
+  https://developers.google.com/speed/webp/
+
+- 进程和线程的区别
+
+## CSS
+
+- flex 布局
+  重点：主轴（main axis）、交叉轴（cross axis）
+        项目排列方式
+        项目对齐方式
+        项目宽高
+  一般设置步骤：设置flex容器 -> 设置主轴方向 -> 设置项目对齐方式
+  http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
+
+- 水平居中
+  inline和inline-block：text-align: center;
+  display: flex; flex-direction: row; justify-content: center;
+  相对父元素 position: absolute; left: 50%; 若已知元素绝对宽度：right: 元素绝对宽度 / 2; 若未知元素绝对宽度：transform: translateX(50%);
+
+- @垂直居中
+  position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+  元素无固定高度：display: table-cell; vertical-align: middle;
+  相对父元素 position: absolute; 同上述水平居中
+  display: flex; flex-direction: row; justify-content: center;
+
+- position: sticky
+  是relative和fixed的结合体。超过某个阈值后一个阈值后定位方式变为fixed。类似豆瓣的小组边栏广告位设计。
+
+- @BFC block format context
+  块级格式上下文是CSS在网页中渲染时的排版单元。在其中会进行块级盒子和浮动元素的排版。
+  很多行为都可以创建块级格式上下文。比如float属性非none，position为absolute和fixed，overflow为非visible，display: flow-root等。
+
+- 清除浮动
+  在浮动元素的父元素上创建一个bfc
+
+- 高度自适应
+- @盒模型
+- em rem px
+
+## JavaScript
+
+- @介绍 Promise （回答为了解决什么问题、如何解决、它的特点（状态机、有哪些状态等）、异常捕获）
+
+- Promise、async 有什么区别
+  Promise 和 Generator 实现了 async/await
+
+- @async await 原理
+  理论上可由 Promise 和 Generator 实现
+  function run (generatorFun) {
+    const iterator = generatorFun();
+    (function handleNext (value) {
+      const next = iterator.next(value);
+      if (next.done) {
+        return next.value;
+      } else {
+        return Promise.resolve(next.value)
+          // the throw() method resumes the execution of a generator by throwing an error into it and returns an object with two properties done and value.
+          .then(handleNext, err => Promise.resolve(iterator.throw(err).value).then(handleNext))
+      }
+    })()
+  }
+  https://wanago.io/2018/04/23/demystifying-generators-implementing-async-await/
+
+- @改变 this 指向的几种方式
+  .bind() .apply() .call()
+  new
+  箭头函数
+
+- @JS 异步解决方案的发展历程
+  回调函数 -> Promise -> Generator + Promise
+
+- bind call apply
+  都能绑定函数内this指向
+  bind不执行，call apply直接执行
+  apply将所有参数放在一个数组内传入
+
+- @介绍原型链
+  JavaScript是基于原型的。几乎所有JavaScript中的对象都是位于原型链顶端的Object的实例。
+  对象A（每个对象都）有__proto__（是浏览器自己实现的）和prototype属性，__proto__指向某一个对象B的prototype，对象B的prototype就是对象A的原型，B的原型对象。
+  当试图访问一个对象的属性时，JavaScript不仅在该对象上搜索，还会搜索该对象的原型，该对象原型的原型，依次层层向上，直到找到或到达原型链的末尾。
+
+- 介绍暂时性死区
+  let and const declarations define variables that are scoped to the running execution context’s LexicalEnvironment. The variables are created when their containing Lexical Environment is instantiated but may not be accessed in any way until the variable’s LexicalBinding is evaluated. A variable defined by a LexicalBinding with an Initializer is assigned the value of its Initializer’s AssignmentExpression when the LexicalBinding is evaluated, not when the variable is created. If a LexicalBinding in a let declaration does not have an Initializer the variable is assigned the value undefined when the LexicalBinding is evaluated.
+  http://www.ecma-international.org/ecma-262/6.0/#sec-let-and-const-declarations
+
+- Map 和原生对象有什么区别
+  1. 记录插入顺序
+  2. 任何数据类型都能用做key和value
+  3. 拥有若干数据操作方法
+
+- @如何设计 Promise.all()
+- @实现 .bind()
+- 数据类型
+  Number, String, Undefined, Null, Boolean
+  Function, Array, Object
+
+- 垃圾回收机制
+- 数组常用方法
+  forEach map filter every reduce reverse slice splice concat join split
+
+- _construct 是什么
+- @new 的实现
+- @如何实现继承
+- 堆和栈分别存什么
+
+- 微任务和宏任务
+  微任务：Process.nextTick, Promise, MutationObserver
+  宏任务：script, setTimeout, setInterval, setImmediate, I/O, UI Rendering
+
+- let 如何实现
+- 介绍formData
+
+- @事件循环机制
+  事件循环是解决JavaScript单线程运行时不会阻塞的一种机制。
+  当函数执行时，会被添加到栈的顶部，当执行完毕后，就会从栈顶移出，直到栈内被清空
+  单线程任务被分为同步任务和异步任务。同步任务会在调用栈中按照顺序等待主线程依次执行，异步任务会在异步任务返回结果后，将注册的回调函数放入任务队列中等待主线程空闲时（调用栈被清空时），被读取到栈内等待主线程的执行。
+  （画个图）
+
+- 类数组arrLike转换成数组
+  ...arrLike
+  Array.from(arrLike)
+  Array.prototype.slice.call(arrLike)
+
+- class 和 ES5 中构造函数的区别
+  es6类继承会继承静态方法
+
+- 深拷贝和浅拷贝
+
+## 浏览器&HTTP
+
+- @DOM 事件机制
+- @跨域 （为什么有同源策略，怎么解决跨域问题）
+- 常见 HTTP 请求头
+- HTTP2.0（是什么，要解决什么问题）
+- HTTP1.1如何复用TCP连接
+- HTTP 报文的请求会有几个部分
+- @Cookie
+- Cookie 和 Session 的区别
+- @输入URL到页面加载全过程
+- TCP 3次握手
+- @HTTP常见状态码 403 301 302 304
+- 缓存相关的HTTP请求头
+- 介绍HTTPS （解决什么问题 原理 加密过程）
+- 数字签名的原理
+- Access-Control-Allow-Origin在服务端哪里配置
+
+- 并发请求资源数上限
+  按域限制，8个以内
+
+- @五层模型
+
+## Node.js
+
+- 介绍 koa2
+- koa-bodyparser 原理
+- Node 开启、重启服务如何保证稳定性
+
+## pm2
+
+- 介绍 pm2
+- pm2 怎么做进程管理
+
+## Webpack
+
+- 介绍 webpack
+- webpack 的插件如何实现
+- dev-server 怎么跑起来的
+- import { Button } from 'antd'，打包时只打包 button，分模块加载，是如何实现的
+- 使用 import 时，webpack 对 node_modules 里的依赖会做什么
+- webpack 生命周期
+- loader 和 plugin 有什么区别
+- @webpack 打包过程
+- 配 CSS 需要哪些 loader
+- 如何配置把 JS CSS HTML 单独打包
+- 打包时 hash 是如何生成的
+
+## React
+
+- @介绍 Redux，主要解决什么问题，设计思想，工作流程
+- 介绍 Redux 数据流的流程
+- Redux 如何实现多个组件之间的通信，多个组建使用相同状态如何进行管理
+- 多个组件之间如何拆分各自的state，每块小的组件有自己的状态，它们之间还有一些公共的状态需要维护，如何设计
+- 使用过的 Redux 中间件
+- React 怎么做数据变化的检查，如何更新视图
+- react-router 怎么实现路由切换
+- react-router 里的 <Link> 和 HTML 中的 <a> 有什么区别
+- DOM 结构发生变化后内部经历了哪些变化
+- Redux 中异步的请求怎么处理
+- @React 生命周期
+- 如何解决 props 层级过深的问题
+- 高阶组件
+- Filber
+- @虚拟 DOM 做了什么
+
+## 软件工程
+
+- 观察者模式
+- 中介者模式
+- 订阅-发布模式
+- 前端单元测试
+- 系统设计
+  1. 定义层（大的系统模块）
+  2. 数据抽象
+
+## 算法
+
+- 各种排序
+- @手写快排
+- 如何判断链表有环，环的入口
+- 介绍二叉搜索树的特点
+- 树的应用
+- dfs bfs
+
